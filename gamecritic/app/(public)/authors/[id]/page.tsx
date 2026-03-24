@@ -4,6 +4,9 @@ import { notFound } from "next/navigation";
 import { getAuthorProfile } from "@/lib/db/authors";
 import { scoreClass } from "@/lib/utils/score";
 
+type AuthorProfile = NonNullable<Awaited<ReturnType<typeof getAuthorProfile>>>;
+type AuthorReview = AuthorProfile["reviews"][number];
+
 export default async function AuthorProfilePage({
   params,
 }: {
@@ -26,7 +29,7 @@ export default async function AuthorProfilePage({
       </section>
 
       <section className="space-y-3">
-        {author.reviews.map((review) => (
+        {author.reviews.map((review: AuthorReview) => (
           <article key={review.id} className="rounded-xl bg-white p-4 shadow">
             <div className="flex items-center justify-between">
               <div>

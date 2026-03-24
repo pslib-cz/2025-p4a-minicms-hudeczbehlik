@@ -5,6 +5,8 @@ import { DeleteReviewButton } from "@/components/dashboard/delete-review-button"
 import { ReviewStatusToggle } from "@/components/dashboard/review-status-toggle";
 import { getMyReviews } from "@/lib/db/reviews";
 
+type DashboardReview = Awaited<ReturnType<typeof getMyReviews>>[number];
+
 export default async function DashboardReviewsPage() {
   const session = await auth();
 
@@ -39,7 +41,7 @@ export default async function DashboardReviewsPage() {
             </tr>
           </thead>
           <tbody>
-            {reviews.map((review) => (
+            {reviews.map((review: DashboardReview) => (
               <tr key={review.id} className="border-t border-slate-200">
                 <td className="px-4 py-3 font-medium text-slate-900">{review.title}</td>
                 <td className="px-4 py-3 text-slate-700">{review.game.title}</td>

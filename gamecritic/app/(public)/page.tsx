@@ -4,6 +4,8 @@ import { Suspense } from "react";
 import { getLatestPublishedReviews, getTopRatedPublishedReviews } from "@/lib/db/reviews";
 import { scoreClass } from "@/lib/utils/score";
 
+type HomeReview = Awaited<ReturnType<typeof getLatestPublishedReviews>>[number];
+
 async function ReviewsGrid({ mode }: { mode: "latest" | "top" }) {
   const reviews =
     mode === "latest"
@@ -12,7 +14,7 @@ async function ReviewsGrid({ mode }: { mode: "latest" | "top" }) {
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {reviews.map((review) => (
+      {reviews.map((review: HomeReview) => (
         <article key={review.id} className="rounded-xl bg-white p-4 shadow">
           <p className="text-sm text-slate-600">{review.game.title}</p>
           <h3 className="mt-1 text-lg font-bold text-slate-900">{review.title}</h3>

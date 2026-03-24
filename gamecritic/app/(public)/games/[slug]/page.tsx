@@ -5,6 +5,10 @@ import { notFound } from "next/navigation";
 import { getGameBySlug } from "@/lib/db/games";
 import { scoreClass } from "@/lib/utils/score";
 
+type GameDetail = NonNullable<Awaited<ReturnType<typeof getGameBySlug>>>;
+type GameDetailReview = GameDetail["reviews"][number];
+type GameDetailScreenshot = GameDetail["screenshots"][number];
+
 export default async function GameDetailPage({
   params,
 }: {
@@ -30,7 +34,7 @@ export default async function GameDetailPage({
       <section>
         <h2 className="text-2xl font-bold text-slate-900">Published reviews</h2>
         <div className="mt-4 space-y-3">
-          {game.reviews.map((review) => (
+          {game.reviews.map((review: GameDetailReview) => (
             <article key={review.id} className="rounded-xl bg-white p-4 shadow">
               <div className="flex items-center justify-between">
                 <div>
@@ -54,7 +58,7 @@ export default async function GameDetailPage({
       <section>
         <h2 className="text-2xl font-bold text-slate-900">Screenshot gallery</h2>
         <div className="mt-4 grid gap-4 md:grid-cols-3">
-          {game.screenshots.map((shot) => (
+          {game.screenshots.map((shot: GameDetailScreenshot) => (
             <figure key={shot.id} className="overflow-hidden rounded-xl bg-white shadow">
               <div className="relative aspect-video w-full">
                 <Image

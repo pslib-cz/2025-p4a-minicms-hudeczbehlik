@@ -6,6 +6,12 @@ import type { CatalogSearchParams } from "@/types";
 
 export const revalidate = 3600;
 
+type GamesCatalogResult = Awaited<ReturnType<typeof getGamesCatalog>>;
+type CatalogGame = GamesCatalogResult["items"][number];
+type FilterResult = Awaited<ReturnType<typeof getGameFilterData>>;
+type CatalogGenre = FilterResult["genres"][number];
+type CatalogTag = FilterResult["tags"][number];
+
 function toArray(value: string | string[] | undefined) {
   if (!value) return [];
   return Array.isArray(value) ? value : [value];
@@ -58,7 +64,7 @@ export default async function GamesPage({
 
         <select name="genre" defaultValue={genres[0]} className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm">
           <option value="">Any genre</option>
-          {filters.genres.map((genre) => (
+          {filters.genres.map((genre: CatalogGenre) => (
             <option key={genre.id} value={genre.slug}>
               {genre.name}
             </option>
@@ -67,7 +73,7 @@ export default async function GamesPage({
 
         <select name="tag" defaultValue={tags[0]} className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm">
           <option value="">Any tag</option>
-          {filters.tags.map((tag) => (
+          {filters.tags.map((tag: CatalogTag) => (
             <option key={tag.id} value={tag.slug}>
               {tag.name}
             </option>
@@ -78,12 +84,12 @@ export default async function GamesPage({
       </form>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {items.map((game) => (
+        {items.map((game: CatalogGame) => (
           <article key={game.id} className="rounded-xl bg-white p-4 shadow">
             <h2 className="text-xl font-bold text-slate-900">{game.title}</h2>
             <p className="mt-2 line-clamp-2 text-sm text-slate-600">{game.description}</p>
             <div className="mt-3 flex flex-wrap gap-1">
-              {game.genres.map((genre) => (
+              {game.genres.map((genre: CatalogGenre) => (
                 <span key={genre.id} className="rounded bg-slate-100 px-2 py-1 text-xs text-slate-600">
                   {genre.name}
                 </span>

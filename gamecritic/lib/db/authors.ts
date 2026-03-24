@@ -1,6 +1,5 @@
-import { ReviewStatus } from "@prisma/client";
-
 import { prisma } from "@/lib/prisma";
+import { REVIEW_STATUS } from "@/types/review-status";
 
 const hasDatabaseUrl = Boolean(process.env.DATABASE_URL);
 
@@ -17,7 +16,7 @@ export async function getAuthorProfile(id: string) {
       image: true,
       createdAt: true,
       reviews: {
-        where: { status: ReviewStatus.PUBLISHED },
+        where: { status: REVIEW_STATUS.PUBLISHED },
         orderBy: { publishDate: "desc" },
         select: {
           id: true,
@@ -33,7 +32,7 @@ export async function getAuthorProfile(id: string) {
       _count: {
         select: {
           reviews: {
-            where: { status: ReviewStatus.PUBLISHED },
+            where: { status: REVIEW_STATUS.PUBLISHED },
           },
         },
       },

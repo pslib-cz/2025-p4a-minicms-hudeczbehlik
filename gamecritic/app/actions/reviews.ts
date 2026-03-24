@@ -1,6 +1,5 @@
 "use server";
 
-import { ReviewStatus } from "@prisma/client";
 import { revalidatePath, revalidateTag } from "next/cache";
 
 import { requireUser } from "@/lib/auth";
@@ -8,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { reviewFormSchema } from "@/lib/validations/review";
 import { fail, ok, zodFail } from "@/lib/utils/action-result";
 import { generateUniqueSlug } from "@/lib/utils/slug";
+import { REVIEW_STATUS, type ReviewStatusValue } from "@/types/review-status";
 import type { ActionResult, ReviewFormData } from "@/types";
 
 export async function createReview(
@@ -37,7 +37,7 @@ export async function createReview(
         authorId: user.id,
         status: input.status,
         publishDate:
-          input.status === ReviewStatus.PUBLISHED
+          input.status === REVIEW_STATUS.PUBLISHED
             ? input.publishDate ?? new Date()
             : null,
       },
@@ -105,7 +105,7 @@ export async function updateReview(
         gameId: input.gameId,
         status: input.status,
         publishDate:
-          input.status === ReviewStatus.PUBLISHED
+          input.status === REVIEW_STATUS.PUBLISHED
             ? input.publishDate ?? existing.publishDate ?? new Date()
             : null,
       },
@@ -174,7 +174,7 @@ export async function deleteReview(id: string): Promise<ActionResult<void>> {
 
 export async function toggleReviewStatus(
   id: string,
-): Promise<ActionResult<ReviewStatus>> {
+): Promise<ActionResult<ReviewStatusValue>> {
   try {
     const user = await requireUser();
 
@@ -188,15 +188,15 @@ export async function toggleReviewStatus(
     }
 
     const nextStatus =
-      existing.status === ReviewStatus.DRAFT
-        ? ReviewStatus.PUBLISHED
-        : ReviewStatus.DRAFT;
+      existing.status === REVIEW_STATUS.DRAFT
+        ? REVIEW_STATUS.PUBLISHED
+        : REVIEW_STATUS.DRAFT;
 
     await prisma.review.update({
       where: { id },
       data: {
         status: nextStatus,
-        publishDate: nextStatus === ReviewStatus.PUBLISHED ? new Date() : null,
+        publishDate: nextStatus === REVIEW_STATUS.PUBLISHED ? new Date() : null,
       },
     });
 

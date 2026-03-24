@@ -1,6 +1,5 @@
-import { ReviewStatus } from "@prisma/client";
-
 import { prisma } from "@/lib/prisma";
+import { REVIEW_STATUS } from "@/types/review-status";
 
 const PER_PAGE = 12;
 const hasDatabaseUrl = Boolean(process.env.DATABASE_URL);
@@ -64,7 +63,7 @@ export async function getGamesCatalog(filters: CatalogFilters) {
         genres: true,
         tags: true,
         reviews: {
-          where: { status: ReviewStatus.PUBLISHED },
+          where: { status: REVIEW_STATUS.PUBLISHED },
           select: { score: true },
         },
       },
@@ -102,7 +101,7 @@ export async function getGameBySlug(slug: string) {
         orderBy: { createdAt: "desc" },
       },
       reviews: {
-        where: { status: ReviewStatus.PUBLISHED },
+        where: { status: REVIEW_STATUS.PUBLISHED },
         include: {
           author: { select: { id: true, name: true, image: true } },
         },
@@ -118,7 +117,7 @@ export async function getGameBySlug(slug: string) {
   const avg = await prisma.review.aggregate({
     where: {
       gameId: game.id,
-      status: ReviewStatus.PUBLISHED,
+      status: REVIEW_STATUS.PUBLISHED,
     },
     _avg: { score: true },
   });

@@ -1,4 +1,4 @@
-import type { ReviewStatus } from "@prisma/client";
+import type { ReviewStatusValue } from "@/types/review-status";
 
 export type ActionResult<T> =
   | { success: true; data: T }
@@ -9,7 +9,7 @@ export type ReviewFormData = {
   slug?: string;
   content: string;
   score: number;
-  status: ReviewStatus;
+  status: ReviewStatusValue;
   publishDate?: Date | null;
   gameId: string;
 };

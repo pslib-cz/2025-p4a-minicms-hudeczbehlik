@@ -1,6 +1,5 @@
-import { ReviewStatus } from "@prisma/client";
-
 import { prisma } from "@/lib/prisma";
+import { REVIEW_STATUS } from "@/types/review-status";
 
 const hasDatabaseUrl = Boolean(process.env.DATABASE_URL);
 
@@ -10,7 +9,7 @@ export async function getLatestPublishedReviews(limit = 6) {
   }
 
   return prisma.review.findMany({
-    where: { status: ReviewStatus.PUBLISHED },
+    where: { status: REVIEW_STATUS.PUBLISHED },
     orderBy: { publishDate: "desc" },
     take: limit,
     include: {
@@ -26,7 +25,7 @@ export async function getTopRatedPublishedReviews(limit = 6) {
   }
 
   return prisma.review.findMany({
-    where: { status: ReviewStatus.PUBLISHED },
+    where: { status: REVIEW_STATUS.PUBLISHED },
     orderBy: [{ score: "desc" }, { publishDate: "desc" }],
     take: limit,
     include: {
@@ -62,14 +61,14 @@ export async function getTopReviewSlugs(limit = 100) {
     return [];
   }
 
-  const reviews = await prisma.review.findMany({
-    where: { status: ReviewStatus.PUBLISHED },
+  const reviews: Array<{ slug: string }> = await prisma.review.findMany({
+    where: { status: REVIEW_STATUS.PUBLISHED },
     orderBy: [{ score: "desc" }, { publishDate: "desc" }],
     take: limit,
     select: { slug: true },
   });
 
-  return reviews.map((review) => ({ slug: review.slug }));
+  return reviews.map((review: { slug: string }) => ({ slug: review.slug }));
 }
 
 export async function getMyReviews(userId: string) {
