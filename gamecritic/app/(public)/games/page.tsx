@@ -28,6 +28,13 @@ export async function generateMetadata({
   return {
     title: q ? `Games matching ${q} | GameCritic` : "Game Catalog | GameCritic",
     description: "Browse games with filters for genres, tags, and search terms.",
+    alternates: {
+      canonical: "/games",
+    },
+    openGraph: {
+      title: q ? `Games: ${q}` : "Game Catalog",
+      description: "Browse games with filters for genres, tags, and search terms.",
+    },
   };
 }
 
@@ -102,16 +109,26 @@ export default async function GamesPage({
         ))}
       </div>
 
-      <div className="flex items-center gap-2">
-        {Array.from({ length: pages }, (_, i) => i + 1).map((p) => (
-          <Link
-            key={p}
-            href={`/games?page=${p}${query ? `&q=${encodeURIComponent(query)}` : ""}`}
-            className="rounded border border-slate-300 px-3 py-1 text-sm"
-          >
-            {p}
-          </Link>
-        ))}
+      <div className="flex flex-wrap items-center gap-2">
+        {Array.from({ length: pages }, (_, i) => i + 1).map((p) => {
+          const sp = new URLSearchParams();
+          if (query) sp.set("q", query);
+          if (genres[0]) sp.set("genre", genres[0]);
+          if (tags[0]) sp.set("tag", tags[0]);
+          if (p > 1) sp.set("page", String(p));
+          const qs = sp.toString();
+          return (
+            <Link
+              key={p}
+              href={qs ? `/games?${qs}` : "/games"}
+              className={`rounded border px-3 py-1 text-sm ${
+                p === page ? "border-sky-600 bg-sky-50 font-semibold text-sky-800" : "border-slate-300"
+              }`}
+            >
+              {p}
+            </Link>
+          );
+        })}
       </div>
     </div>
   );

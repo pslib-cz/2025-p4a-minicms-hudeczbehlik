@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { getGameBySlug } from "@/lib/db/games";
@@ -8,6 +9,36 @@ import { scoreClass } from "@/lib/utils/score";
 type GameDetail = NonNullable<Awaited<ReturnType<typeof getGameBySlug>>>;
 type GameDetailReview = GameDetail["reviews"][number];
 type GameDetailScreenshot = GameDetail["screenshots"][number];
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const game = await getGameBySlug(slug);
+
+  if (!game) {
+    return { title: "Hra nenalezena" };
+  }
+
+  const desc =
+    game.description?.slice(0, 155) ?? `Recenze a detaily hry ${game.title} na GameCritic.`;
+
+  return {
+    title: game.title,
+    description: desc,
+    alternates: {
+      canonical: `/games/${slug}`,
+    },
+    openGraph: {
+      title: game.title,
+      description: desc,
+      url: `/games/${slug}`,
+      images: game.coverImage ? [game.coverImage] : [],
+    },
+  };
+}
 
 export default async function GameDetailPage({
   params,

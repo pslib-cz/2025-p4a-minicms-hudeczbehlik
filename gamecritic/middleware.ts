@@ -11,7 +11,11 @@ export default function middleware(req: NextRequest) {
 
     if (!hasToken) {
       const loginUrl = new URL("/login", req.nextUrl.origin);
-      loginUrl.searchParams.set("callbackUrl", req.nextUrl.href);
+      // Use relative path so login can safely redirect back.
+      loginUrl.searchParams.set(
+        "callbackUrl",
+        `${req.nextUrl.pathname}${req.nextUrl.search}`,
+      );
 
       return NextResponse.redirect(loginUrl);
     }

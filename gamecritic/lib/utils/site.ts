@@ -1,0 +1,5 @@
+/** Základní URL webu (metadata, sitemap, canonical). Bez koncového lomítka. */
+export function getSiteUrl(): string {
+  const raw = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  return raw.replace(/\/$/, "");
+}

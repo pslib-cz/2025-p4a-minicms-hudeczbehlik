@@ -1,66 +1,77 @@
 import Link from "next/link";
+import Table from "react-bootstrap/Table";
 
 import { auth } from "@/auth";
 import { DeleteReviewButton } from "@/components/dashboard/delete-review-button";
 import { ReviewStatusToggle } from "@/components/dashboard/review-status-toggle";
-import { getMyReviews } from "@/lib/db/reviews";
+import { getMyReviewsPaginated } from "@/lib/db/reviews";
 
-type DashboardReview = Awaited<ReturnType<typeof getMyReviews>>[number];
+type DashboardReview = Awaited<
+  ReturnType<typeof getMyReviewsPaginated>
+>["items"][number];
 
-export default async function DashboardReviewsPage() {
+export default async function DashboardReviewsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
   const session = await auth();
+  const params = await searchParams;
+  const page = Math.max(1, Number.parseInt(params.page ?? "1", 10) || 1);
 
   if (!session?.user?.id) {
     return null;
   }
 
-  const reviews = await getMyReviews(session.user.id);
+  const { items: reviews, pages, page: currentPage } = await getMyReviewsPaginated(
+    session.user.id,
+    page,
+  );
+
+  const buildHref = (p: number) => (p <= 1 ? "/dashboard/reviews" : `/dashboard/reviews?page=${p}`);
 
   return (
-    <section className="space-y-5">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-black text-slate-900">Your reviews</h1>
-        <Link
-          href="/dashboard/reviews/new"
-          className="rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white"
-        >
-          New review
+    <section>
+      <div className="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <h1 className="h2 fw-bold text-dark mb-0">Vaše recenze</h1>
+        <Link href="/dashboard/reviews/new" className="btn btn-primary">
+          Nová recenze
         </Link>
       </div>
 
-      <div className="overflow-x-auto rounded-xl bg-white shadow">
-        <table className="w-full min-w-[900px] text-left text-sm">
-          <thead className="bg-slate-100 text-slate-700">
+      <div className="table-responsive rounded shadow-sm bg-white">
+        <Table striped bordered hover size="sm" className="mb-0 align-middle">
+          <thead className="table-light">
             <tr>
-              <th className="px-4 py-3">Title</th>
-              <th className="px-4 py-3">Game</th>
-              <th className="px-4 py-3">Score</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Publish date</th>
-              <th className="px-4 py-3">Actions</th>
+              <th>Název</th>
+              <th>Hra</th>
+              <th>Skóre</th>
+              <th>Stav</th>
+              <th>Publikováno</th>
+              <th>Akce</th>
             </tr>
           </thead>
           <tbody>
             {reviews.map((review: DashboardReview) => (
-              <tr key={review.id} className="border-t border-slate-200">
-                <td className="px-4 py-3 font-medium text-slate-900">{review.title}</td>
-                <td className="px-4 py-3 text-slate-700">{review.game.title}</td>
-                <td className="px-4 py-3 text-slate-700">{review.score}</td>
-                <td className="px-4 py-3">
+              <tr key={review.id}>
+                <td className="fw-medium">{review.title}</td>
+                <td>{review.game.title}</td>
+                <td>{review.score}</td>
+                <td>
                   <ReviewStatusToggle reviewId={review.id} status={review.status} />
                 </td>
-                <td className="px-4 py-3 text-slate-700">
+                <td className="text-nowrap small">
                   {review.publishDate
                     ? new Date(review.publishDate).toLocaleString()
-                    : "Not published"}
+                    : "—"}
                 </td>
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-2">
+                <td>
+                  <div className="d-flex flex-wrap gap-2">
                     <Link
                       href={`/dashboard/reviews/${review.id}/edit`}
-                      className="rounded-lg bg-slate-200 px-3 py-2 text-xs font-semibold text-slate-900"
+                      className="btn btn-outline-secondary btn-sm"
                     >
-                      Edit
+                      Upravit
                     </Link>
                     <DeleteReviewButton reviewId={review.id} />
                   </div>
@@ -68,8 +79,22 @@ export default async function DashboardReviewsPage() {
               </tr>
             ))}
           </tbody>
-        </table>
+        </Table>
       </div>
+
+      {pages > 1 ? (
+        <div className="d-flex flex-wrap gap-2 justify-content-center mt-4">
+          {Array.from({ length: pages }, (_, i) => i + 1).map((p) => (
+            <Link
+              key={p}
+              href={buildHref(p)}
+              className={`btn btn-sm ${p === currentPage ? "btn-primary" : "btn-outline-secondary"}`}
+            >
+              {p}
+            </Link>
+          ))}
+        </div>
+      ) : null}
     </section>
   );
 }

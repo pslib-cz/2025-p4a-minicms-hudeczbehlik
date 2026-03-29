@@ -31,3 +31,10 @@ export type CatalogSearchParams = {
   q?: string;
   page?: string;
 };
+
+/** Veřejný katalog recenzí (`/reviews`). */
+export type ReviewCatalogSearchParams = {
+  tag?: string | string[];
+  q?: string;
+  page?: string;
+};

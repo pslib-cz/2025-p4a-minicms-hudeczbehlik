@@ -1,8 +1,21 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { Suspense } from "react";
 
 import { getLatestPublishedReviews, getTopRatedPublishedReviews } from "@/lib/db/reviews";
 import { scoreClass } from "@/lib/utils/score";
+
+export const metadata: Metadata = {
+  title: "Domů",
+  description: "Nejnovější a nejlépe hodnocené herní recenze od komunity GameCritic.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "GameCritic",
+    description: "Komunitní platforma pro recenze her.",
+  },
+};
 
 type HomeReview = Awaited<ReturnType<typeof getLatestPublishedReviews>>[number];
 

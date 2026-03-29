@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const gameFormSchema = z.object({
   title: z.string().trim().min(2).max(180),
-  slug: z.string().trim().min(2).max(200).optional(),
+  slug: z.string().trim().min(2).max(200).optional().or(z.literal("")),
   description: z.string().trim().max(5000).optional().or(z.literal("")),
   releaseYear: z
     .union([z.coerce.number().int().min(1950).max(2100), z.null()])

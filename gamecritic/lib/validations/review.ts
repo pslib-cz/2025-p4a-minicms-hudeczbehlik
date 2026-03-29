@@ -3,7 +3,7 @@ import { REVIEW_STATUS } from "@/types/review-status";
 
 export const reviewFormSchema = z.object({
   title: z.string().trim().min(3).max(160),
-  slug: z.string().trim().min(3).max(180).optional(),
+  slug: z.string().trim().min(3).max(180).optional().or(z.literal("")),
   content: z.string().trim().min(20),
   score: z.coerce.number().int().min(1).max(10),
   status: z.enum([REVIEW_STATUS.DRAFT, REVIEW_STATUS.PUBLISHED]),

@@ -4,9 +4,17 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "postinstall": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:push": "prisma db push",
+    "db:seed": "prisma db seed",
+    "db:studio": "prisma studio"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
@@ -15,14 +23,17 @@
     "@tiptap/react": "^3.20.4",
     "@tiptap/starter-kit": "^3.20.4",
     "bcryptjs": "^3.0.3",
+    "bootstrap": "^5.3.8",
     "isomorphic-dompurify": "^3.7.1",
     "next": "16.2.1",
     "next-auth": "^5.0.0-beta.30",
     "prisma": "^6.17.1",
     "react": "19.2.4",
+    "react-bootstrap": "^2.10.10",
     "react-dom": "19.2.4",
     "react-hook-form": "^7.72.0",
     "slugify": "^1.6.8",
+    "vanilla-cookieconsent": "^3.1.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {
@@ -33,6 +44,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.1",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }

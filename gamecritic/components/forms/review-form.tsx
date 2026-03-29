@@ -3,17 +3,19 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { useForm, Controller, useWatch } from "react-hook-form";
+import Button from "react-bootstrap/Button";
+import Col from "react-bootstrap/Col";
+import Form from "react-bootstrap/Form";
+import Row from "react-bootstrap/Row";
+import { Controller, useForm, useWatch } from "react-hook-form";
 
-import { createReview, updateReview } from "@/app/actions/reviews";
 import { TiptapEditor } from "@/components/forms/tiptap-editor";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   reviewFormSchema,
   type ReviewSchemaInput,
 } from "@/lib/validations/review";
 import { REVIEW_STATUS } from "@/types/review-status";
+import type { ActionResult } from "@/types";
 
 type GameOption = {
   id: string;
@@ -26,9 +28,31 @@ type Props = {
   defaultValues?: Partial<ReviewSchemaInput>;
 };
 
+function buildJsonPayload(values: ReviewSchemaInput): Record<string, unknown> {
+  let publishDate: string | null = null;
+  if (values.publishDate) {
+    const d =
+      values.publishDate instanceof Date
+        ? values.publishDate
+        : new Date(values.publishDate as unknown as string);
+    publishDate = Number.isNaN(d.getTime()) ? null : d.toISOString();
+  }
+
+  return {
+    title: values.title,
+    slug: values.slug?.trim() ? values.slug : undefined,
+    content: values.content,
+    score: values.score,
+    status: values.status,
+    gameId: values.gameId,
+    publishDate,
+  };
+}
+
 export function ReviewForm({ games, reviewId, defaultValues }: Props) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string[]> | undefined>();
   const router = useRouter();
 
   const form = useForm<ReviewSchemaInput>({
@@ -49,29 +73,34 @@ export function ReviewForm({ games, reviewId, defaultValues }: Props) {
 
   const onSubmit = (values: ReviewSchemaInput) => {
     setError(null);
+    setFieldErrors(undefined);
 
-    const payload = {
+    const payload = buildJsonPayload({
       ...values,
       score:
         typeof values.score === "number" && Number.isFinite(values.score)
           ? values.score
           : 1,
-      publishDate:
-        values.publishDate instanceof Date
-          ? values.publishDate
-          : typeof values.publishDate === "string" ||
-              typeof values.publishDate === "number"
-            ? new Date(values.publishDate)
-            : undefined,
-    };
+    });
 
     startTransition(async () => {
-      const result = reviewId
-        ? await updateReview(reviewId, payload)
-        : await createReview(payload);
+      const url = reviewId ? `/api/reviews/${reviewId}` : "/api/reviews";
+      const method = reviewId ? "PATCH" : "POST";
 
-      if (!result.success) {
-        setError(result.error);
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload),
+      });
+
+      const json = (await res.json()) as ActionResult<{ slug: string } | void>;
+
+      if (!json.success) {
+        setError(json.error);
+        if ("fieldErrors" in json && json.fieldErrors) {
+          setFieldErrors(json.fieldErrors);
+        }
         return;
       }
 
@@ -81,63 +110,72 @@ export function ReviewForm({ games, reviewId, defaultValues }: Props) {
   };
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 rounded-xl bg-white p-6 shadow">
-      <div className="space-y-2">
-        <label className="text-sm font-medium text-slate-800">Title</label>
-        <Input {...form.register("title")} placeholder="Review title" />
-      </div>
+    <Form onSubmit={form.handleSubmit(onSubmit)} className="rounded bg-white p-4 shadow-sm space-y-4">
+      <Row>
+        <Col md={12}>
+          <Form.Group className="mb-3" controlId="title">
+            <Form.Label>Název</Form.Label>
+            <Form.Control {...form.register("title")} placeholder="Název recenze" />
+            {fieldErrors?.title ? (
+              <Form.Text className="text-danger d-block">{fieldErrors.title.join(", ")}</Form.Text>
+            ) : null}
+          </Form.Group>
+        </Col>
+      </Row>
 
-      <div className="space-y-2">
-        <label className="text-sm font-medium text-slate-800">Slug (optional)</label>
-        <Input {...form.register("slug")} placeholder="auto-generated-from-title" />
-      </div>
+      <Row>
+        <Col md={12}>
+          <Form.Group className="mb-3" controlId="slug">
+            <Form.Label>Slug (volitelné)</Form.Label>
+            <Form.Control {...form.register("slug")} placeholder="auto-generováno z názvu" />
+          </Form.Group>
+        </Col>
+      </Row>
 
-      <div className="space-y-2">
-        <label className="text-sm font-medium text-slate-800">Game</label>
-        <select
-          {...form.register("gameId")}
-          className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
-        >
-          {games.map((game) => (
-            <option key={game.id} value={game.id}>
-              {game.title}
-            </option>
-          ))}
-        </select>
-      </div>
+      <Row>
+        <Col md={12}>
+          <Form.Group className="mb-3" controlId="gameId">
+            <Form.Label>Hra</Form.Label>
+            <Form.Select {...form.register("gameId")}>
+              {games.map((game) => (
+                <option key={game.id} value={game.id}>
+                  {game.title}
+                </option>
+              ))}
+            </Form.Select>
+          </Form.Group>
+        </Col>
+      </Row>
 
-      <div className="space-y-2">
-        <label className="text-sm font-medium text-slate-800">Score: {scoreValue}</label>
-        <input
-          type="range"
-          min={1}
-          max={10}
-          step={1}
-          {...form.register("score", { valueAsNumber: true })}
-          className="w-full"
-        />
-      </div>
+      <Row>
+        <Col md={12}>
+          <Form.Group className="mb-3" controlId="score">
+            <Form.Label>Skóre: {scoreValue}</Form.Label>
+            <Form.Range min={1} max={10} step={1} {...form.register("score", { valueAsNumber: true })} />
+          </Form.Group>
+        </Col>
+      </Row>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-800">Status</label>
-          <select
-            {...form.register("status")}
-            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
-          >
-            <option value={REVIEW_STATUS.DRAFT}>DRAFT</option>
-            <option value={REVIEW_STATUS.PUBLISHED}>PUBLISHED</option>
-          </select>
-        </div>
+      <Row>
+        <Col md={6}>
+          <Form.Group className="mb-3" controlId="status">
+            <Form.Label>Stav</Form.Label>
+            <Form.Select {...form.register("status")}>
+              <option value={REVIEW_STATUS.DRAFT}>DRAFT</option>
+              <option value={REVIEW_STATUS.PUBLISHED}>PUBLISHED</option>
+            </Form.Select>
+          </Form.Group>
+        </Col>
+        <Col md={6}>
+          <Form.Group className="mb-3" controlId="publishDate">
+            <Form.Label>Datum publikace</Form.Label>
+            <Form.Control type="datetime-local" {...form.register("publishDate")} />
+          </Form.Group>
+        </Col>
+      </Row>
 
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-800">Publish Date</label>
-          <Input type="datetime-local" {...form.register("publishDate")} />
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <label className="text-sm font-medium text-slate-800">Content</label>
+      <Form.Group className="mb-3" controlId="content">
+        <Form.Label>Obsah</Form.Label>
         <Controller
           control={form.control}
           name="content"
@@ -145,13 +183,16 @@ export function ReviewForm({ games, reviewId, defaultValues }: Props) {
             <TiptapEditor value={field.value ?? ""} onChange={field.onChange} />
           )}
         />
-      </div>
+        {fieldErrors?.content ? (
+          <Form.Text className="text-danger d-block">{fieldErrors.content.join(", ")}</Form.Text>
+        ) : null}
+      </Form.Group>
 
-      {error ? <p className="text-sm text-rose-600">{error}</p> : null}
+      {error ? <p className="text-danger small">{error}</p> : null}
 
-      <Button type="submit" disabled={pending}>
-        {pending ? "Saving..." : reviewId ? "Update review" : "Create review"}
+      <Button type="submit" variant="primary" disabled={pending}>
+        {pending ? "Ukládám…" : reviewId ? "Uložit změny" : "Vytvořit recenzi"}
       </Button>
-    </form>
+    </Form>
   );
 }

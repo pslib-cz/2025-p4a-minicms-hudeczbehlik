@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
-import { deleteScreenshot, uploadScreenshot } from "@/app/actions/screenshots";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -25,6 +25,7 @@ type Props = {
 };
 
 export function ScreenshotManager({ games, screenshots }: Props) {
+  const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [formState, setFormState] = useState({
     gameId: games[0]?.id ?? "",
@@ -74,18 +75,26 @@ export function ScreenshotManager({ games, screenshots }: Props) {
             disabled={pending}
             onClick={() => {
               startTransition(async () => {
-                const result = await uploadScreenshot(
-                  formState.gameId,
-                  formState.url,
-                  formState.caption || undefined,
-                );
+                const res = await fetch("/api/screenshots", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  credentials: "include",
+                  body: JSON.stringify({
+                    gameId: formState.gameId,
+                    url: formState.url,
+                    caption: formState.caption || undefined,
+                  }),
+                });
 
-                if (!result.success) {
-                  alert(result.error);
+                const json = (await res.json()) as { success: boolean; error?: string };
+
+                if (!json.success) {
+                  alert(json.error);
                   return;
                 }
 
                 setFormState((prev) => ({ ...prev, url: "", caption: "" }));
+                router.refresh();
               });
             }}
           >
@@ -115,7 +124,19 @@ export function ScreenshotManager({ games, screenshots }: Props) {
                 variant="danger"
                 onClick={() => {
                   startTransition(async () => {
-                    await deleteScreenshot(shot.id);
+                    const res = await fetch(`/api/screenshots/${shot.id}`, {
+                      method: "DELETE",
+                      credentials: "include",
+                    });
+
+                    const json = (await res.json()) as { success: boolean; error?: string };
+
+                    if (!json.success) {
+                      alert(json.error ?? "Smazání se nezdařilo.");
+                      return;
+                    }
+
+                    router.refresh();
                   });
                 }}
               >

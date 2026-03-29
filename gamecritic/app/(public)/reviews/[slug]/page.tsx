@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { getReviewBySlug, getTopReviewSlugs } from "@/lib/db/reviews";
+import { getPublishedReviewBySlug, getTopReviewSlugs } from "@/lib/db/reviews";
 import { sanitizeHtml } from "@/lib/utils/sanitize";
 import { scoreClass } from "@/lib/utils/score";
 
@@ -17,7 +17,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const review = await getReviewBySlug(slug);
+  const review = await getPublishedReviewBySlug(slug);
 
   if (!review) {
     return {
@@ -25,12 +25,19 @@ export async function generateMetadata({
     };
   }
 
+  const plain = review.content.replace(/<[^>]+>/g, "").slice(0, 155);
+
   return {
     title: `${review.title} | GameCritic`,
-    description: review.content.replace(/<[^>]+>/g, "").slice(0, 155),
+    description: plain,
+    alternates: {
+      canonical: `/reviews/${slug}`,
+    },
     openGraph: {
       title: review.title,
-      description: review.content.replace(/<[^>]+>/g, "").slice(0, 155),
+      description: plain,
+      url: `/reviews/${slug}`,
+      type: "article",
       images: review.game.coverImage ? [review.game.coverImage] : [],
     },
   };
@@ -42,7 +49,7 @@ export default async function ReviewDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const review = await getReviewBySlug(slug);
+  const review = await getPublishedReviewBySlug(slug);
 
   if (!review) {
     notFound();

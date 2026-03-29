@@ -13,6 +13,7 @@ export default function PublicLayout({
             GameCritic
           </Link>
           <div className="flex items-center gap-4 text-sm font-medium text-slate-700">
+            <Link href="/reviews">Reviews</Link>
             <Link href="/games">Games</Link>
             <Link href="/dashboard">Dashboard</Link>
           </div>

@@ -2,7 +2,27 @@ import { redirect } from "next/navigation";
 
 import { signIn } from "@/auth";
 
-export default function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ callbackUrl?: string }>;
+}) {
+  const { callbackUrl } = await searchParams;
+  const redirectTo = (() => {
+    if (!callbackUrl) return "/dashboard";
+    if (callbackUrl.startsWith("/")) return callbackUrl;
+    // Allow absolute URLs only for same-origin redirects.
+    try {
+      const url = new URL(callbackUrl);
+      if (url.origin === process.env.NEXT_PUBLIC_SITE_URL || url.origin === "http://localhost:3000") {
+        return `${url.pathname}${url.search}`;
+      }
+    } catch {
+      // ignore
+    }
+    return "/dashboard";
+  })();
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-100 p-4">
       <form
@@ -12,10 +32,10 @@ export default function LoginPage() {
           await signIn("credentials", {
             email: formData.get("email"),
             password: formData.get("password"),
-            redirectTo: "/dashboard",
+            redirectTo,
           });
 
-          redirect("/dashboard");
+          redirect(redirectTo);
         }}
         className="w-full max-w-md space-y-4 rounded-xl bg-white p-6 shadow"
       >
