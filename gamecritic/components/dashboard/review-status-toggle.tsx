@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { useOptimistic, useTransition } from "react";
-import Button from "react-bootstrap/Button";
 
 import { REVIEW_STATUS, type ReviewStatusValue } from "@/types/review-status";
 
@@ -16,13 +15,17 @@ export function ReviewStatusToggle({ reviewId, status }: Props) {
   const [pending, startTransition] = useTransition();
   const [optimisticStatus, setOptimisticStatus] = useOptimistic(status);
 
+  const isPublished = optimisticStatus === REVIEW_STATUS.PUBLISHED;
+
   return (
-    <Button
+    <button
       type="button"
-      variant={optimisticStatus === REVIEW_STATUS.PUBLISHED ? "success" : "secondary"}
-      size="sm"
       disabled={pending}
-      className="min-w-100"
+      className={`min-w-[100px] px-3 py-2 text-sm font-medium rounded transition-all duration-200 ${
+        isPublished
+          ? "bg-green-600 hover:bg-green-700 text-white"
+          : "bg-gray-600 hover:bg-gray-700 text-white"
+      } disabled:opacity-50 disabled:cursor-not-allowed`}
       onClick={() => {
         const next =
           optimisticStatus === REVIEW_STATUS.DRAFT
@@ -49,6 +52,6 @@ export function ReviewStatusToggle({ reviewId, status }: Props) {
       }}
     >
       {optimisticStatus}
-    </Button>
+    </button>
   );
 }

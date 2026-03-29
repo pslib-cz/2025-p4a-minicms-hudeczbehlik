@@ -35,9 +35,9 @@ export function ScreenshotManager({ games, screenshots }: Props) {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-xl bg-white p-6 shadow">
-        <h2 className="text-lg font-semibold text-slate-900">Upload screenshot</h2>
-        <p className="mt-1 text-sm text-slate-600">Uploadthing/Cloudinary URL can be pasted below.</p>
+      <div className="rounded-xl bg-gradient-to-br from-gray-900 to-black border border-orange-600/30 p-6 shadow-lg">
+        <h2 className="text-lg font-semibold text-white">Upload screenshot</h2>
+        <p className="mt-1 text-sm text-gray-400">Uploadthing/Cloudinary URL can be pasted below.</p>
 
         <div className="mt-4 grid gap-3 md:grid-cols-4">
           <select
@@ -45,7 +45,7 @@ export function ScreenshotManager({ games, screenshots }: Props) {
             onChange={(event) =>
               setFormState((prev) => ({ ...prev, gameId: event.target.value }))
             }
-            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
+            className="rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-white focus:ring-2 focus:ring-orange-500"
           >
             {games.map((game) => (
               <option key={game.id} value={game.id}>
@@ -105,7 +105,7 @@ export function ScreenshotManager({ games, screenshots }: Props) {
 
       <div className="grid gap-4 md:grid-cols-3">
         {screenshots.map((shot) => (
-          <article key={shot.id} className="overflow-hidden rounded-xl bg-white shadow">
+          <article key={shot.id} className="overflow-hidden rounded-xl bg-gradient-to-br from-gray-900 to-black border border-orange-600/30 shadow-lg">
             <div className="relative aspect-video w-full">
               <Image
                 src={shot.url}
@@ -115,9 +115,9 @@ export function ScreenshotManager({ games, screenshots }: Props) {
               />
             </div>
             <div className="space-y-2 p-4">
-              <p className="text-sm font-medium text-slate-900">{shot.game.title}</p>
+              <p className="text-sm font-medium text-white">{shot.game.title}</p>
               {shot.caption ? (
-                <p className="text-sm text-slate-700">{shot.caption}</p>
+                <p className="text-sm text-gray-400">{shot.caption}</p>
               ) : null}
               <Button
                 type="button"

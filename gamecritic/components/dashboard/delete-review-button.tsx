@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
-import Button from "react-bootstrap/Button";
 
 type Props = {
   reviewId: string;
@@ -13,11 +12,10 @@ export function DeleteReviewButton({ reviewId }: Props) {
   const [pending, startTransition] = useTransition();
 
   return (
-    <Button
+    <button
       type="button"
-      variant="danger"
-      size="sm"
       disabled={pending}
+      className="px-3 py-2 text-sm font-medium bg-red-600 hover:bg-red-700 text-white rounded transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
       onClick={() => {
         const confirmed = window.confirm("Smazat tuto recenzi? Tuto akci nelze vrátit.");
         if (!confirmed) return;
@@ -40,6 +38,6 @@ export function DeleteReviewButton({ reviewId }: Props) {
       }}
     >
       {pending ? "…" : "Smazat"}
-    </Button>
+    </button>
   );
 }

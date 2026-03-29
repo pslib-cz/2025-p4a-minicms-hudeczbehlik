@@ -24,7 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="cs" className="h-full antialiased">
-      <body className="min-h-full bg-slate-100 text-slate-900">
+      <body className="min-h-full bg-black text-white">
         {children}
         <CookieConsentBanner />
       </body>

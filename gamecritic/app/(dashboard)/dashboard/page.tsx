@@ -1,10 +1,4 @@
-import Link from "next/link";
-import Card from "react-bootstrap/Card";
-import CardBody from "react-bootstrap/CardBody";
-import CardText from "react-bootstrap/CardText";
-import CardTitle from "react-bootstrap/CardTitle";
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
+﻿import Link from "next/link";
 
 import { auth } from "@/auth";
 
@@ -13,52 +7,36 @@ export default async function DashboardPage() {
 
   return (
     <div>
-      <Card className="mb-4 shadow-sm border-0">
-        <CardBody>
-          <CardTitle as="h1" className="h3 fw-bold">
-            Dashboard
-          </CardTitle>
-          <CardText className="text-muted mb-0">
-            Vítejte, {session?.user?.name ?? "recenzente"}.
-          </CardText>
-        </CardBody>
-      </Card>
+      <div className="mb-6 rounded-lg bg-gradient-to-r from-orange-600 to-red-600 p-6 shadow-lg">
+        <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
+        <p className="text-orange-100">
+          Vítejte, {session?.user?.name ?? "recenzente"}.
+        </p>
+      </div>
 
-      <Row className="g-4">
-        <Col md={4}>
-          <Card className="h-100 shadow-sm border-0">
-            <CardBody>
-              <CardTitle className="h5">Recenze</CardTitle>
-              <CardText className="text-muted small">Správa vlastních recenzí.</CardText>
-              <Link href="/dashboard/reviews" className="stretched-link fw-semibold text-decoration-none">
-                Otevřít →
-              </Link>
-            </CardBody>
-          </Card>
-        </Col>
-        <Col md={4}>
-          <Card className="h-100 shadow-sm border-0">
-            <CardBody>
-              <CardTitle className="h5">Nová hra</CardTitle>
-              <CardText className="text-muted small">Přidat záznam hry a tagy.</CardText>
-              <Link href="/dashboard/games/new" className="stretched-link fw-semibold text-decoration-none">
-                Otevřít →
-              </Link>
-            </CardBody>
-          </Card>
-        </Col>
-        <Col md={4}>
-          <Card className="h-100 shadow-sm border-0">
-            <CardBody>
-              <CardTitle className="h5">Screenshoty</CardTitle>
-              <CardText className="text-muted small">Galerie k hrám.</CardText>
-              <Link href="/dashboard/screenshots" className="stretched-link fw-semibold text-decoration-none">
-                Otevřít →
-              </Link>
-            </CardBody>
-          </Card>
-        </Col>
-      </Row>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="rounded-lg bg-gradient-to-br from-gray-900 to-black border border-orange-600/30 p-6 shadow-xl hover:shadow-2xl transition-shadow">
+          <h3 className="text-lg font-bold text-orange-400 mb-2">Recenze</h3>
+          <p className="text-gray-400 text-sm mb-4">Správa vlastních recenzí.</p>
+          <Link href="/dashboard/reviews" className="inline-block font-semibold text-orange-400 hover:text-orange-300 transition-colors">
+            Otevřít →
+          </Link>
+        </div>
+        <div className="rounded-lg bg-gradient-to-br from-gray-900 to-black border border-orange-600/30 p-6 shadow-xl hover:shadow-2xl transition-shadow">
+          <h3 className="text-lg font-bold text-orange-400 mb-2">Nová hra</h3>
+          <p className="text-gray-400 text-sm mb-4">Přidat záznam hry a tagy.</p>
+          <Link href="/dashboard/games/new" className="inline-block font-semibold text-orange-400 hover:text-orange-300 transition-colors">
+            Otevřít →
+          </Link>
+        </div>
+        <div className="rounded-lg bg-gradient-to-br from-gray-900 to-black border border-orange-600/30 p-6 shadow-xl hover:shadow-2xl transition-shadow">
+          <h3 className="text-lg font-bold text-orange-400 mb-2">Screenshoty</h3>
+          <p className="text-gray-400 text-sm mb-4">Galerie k hrám.</p>
+          <Link href="/dashboard/screenshots" className="inline-block font-semibold text-orange-400 hover:text-orange-300 transition-colors">
+            Otevřít →
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

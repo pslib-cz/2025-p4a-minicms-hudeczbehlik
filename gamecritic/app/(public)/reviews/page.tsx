@@ -72,24 +72,24 @@ export default async function ReviewsCatalogPage({
   return (
     <div className="space-y-8">
       <header>
-        <h1 className="text-3xl font-black text-slate-900">Publikované recenze</h1>
-        <p className="mt-2 text-slate-600">
+        <h1 className="text-3xl font-black text-white">Publikované recenze</h1>
+        <p className="mt-2 text-gray-400">
           Vyhledávání v titulku a textu, filtrování podle tagu přiřazeného hře.
         </p>
       </header>
 
-      <form className="grid gap-4 rounded-xl bg-white p-4 shadow md:grid-cols-4">
+      <form className="grid gap-4 rounded-xl bg-gradient-to-br from-gray-900 to-black border border-orange-600/30 p-4 shadow-lg md:grid-cols-4">
         <input
           name="q"
           defaultValue={query}
           placeholder="Hledat v recenzích..."
-          className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
+          className="rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500"
         />
 
         <select
           name="tag"
           defaultValue={tags[0]}
-          className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
+          className="rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
         >
           <option value="">Libovolný tag</option>
           {tagList.map((tag: CatalogTag) => (
@@ -102,7 +102,7 @@ export default async function ReviewsCatalogPage({
         <div className="md:col-span-2 flex gap-2">
           <button
             type="submit"
-            className="rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white"
+            className="rounded-lg bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 px-4 py-2 text-sm font-semibold text-white transition-all"
           >
             Použít filtry
           </button>
@@ -111,17 +111,17 @@ export default async function ReviewsCatalogPage({
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {items.map((review: CatalogItem) => (
-          <article key={review.id} className="rounded-xl bg-white p-4 shadow">
-            <p className="text-sm text-slate-600">{review.game.title}</p>
-            <h2 className="mt-1 text-lg font-bold text-slate-900">{review.title}</h2>
-            <p className="mt-2 text-sm text-slate-600">Autor: {review.author.name}</p>
+          <article key={review.id} className="rounded-xl bg-gradient-to-br from-gray-900 to-black border border-orange-600/30 p-4 shadow-lg hover:shadow-xl transition-shadow">
+            <p className="text-sm text-gray-400">{review.game.title}</p>
+            <h2 className="mt-1 text-lg font-bold text-white">{review.title}</h2>
+            <p className="mt-2 text-sm text-gray-400">Autor: {review.author.name}</p>
             <div className="mt-4 flex items-center justify-between">
               <span className={`text-sm font-semibold ${scoreClass(review.score)}`}>
                 {review.score}/10
               </span>
               <Link
                 href={`/reviews/${review.slug}`}
-                className="text-sm font-semibold text-sky-600"
+                className="text-sm font-semibold text-orange-400 hover:text-orange-300 transition-colors"
               >
                 Číst recenzi
               </Link>
@@ -131,7 +131,7 @@ export default async function ReviewsCatalogPage({
       </div>
 
       {items.length === 0 ? (
-        <p className="text-slate-600">Žádné recenze neodpovídají filtru.</p>
+        <p className="text-gray-400">Žádné recenze neodpovídají filtru.</p>
       ) : null}
 
       <div className="flex flex-wrap items-center gap-2">

@@ -1,12 +1,8 @@
-"use client";
+﻿"use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import Button from "react-bootstrap/Button";
-import Col from "react-bootstrap/Col";
-import Form from "react-bootstrap/Form";
-import Row from "react-bootstrap/Row";
 import { useForm } from "react-hook-form";
 
 import { gameFormSchema, type GameSchemaInput } from "@/lib/validations/game";
@@ -78,102 +74,148 @@ export function GameForm({ genres, tags }: Props) {
   };
 
   return (
-    <Form onSubmit={form.handleSubmit(onSubmit)} className="rounded bg-white p-4 shadow-sm">
-      <Form.Group className="mb-3" controlId="game-title">
-        <Form.Label>Název hry</Form.Label>
-        <Form.Control {...form.register("title")} />
-      </Form.Group>
+    <form onSubmit={form.handleSubmit(onSubmit)} className="rounded-lg bg-gradient-to-br from-gray-900 to-black p-6 shadow-xl border border-orange-600/30 space-y-6">
+      {/* Title */}
+      <div>
+        <label htmlFor="game-title" className="block text-sm font-medium text-orange-400 mb-2">
+          Název hry
+        </label>
+        <input
+          id="game-title"
+          {...form.register("title")}
+          className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+        />
+      </div>
 
-      <Form.Group className="mb-3" controlId="game-slug">
-        <Form.Label>Slug (volitelné)</Form.Label>
-        <Form.Control {...form.register("slug")} />
-      </Form.Group>
+      {/* Slug */}
+      <div>
+        <label htmlFor="game-slug" className="block text-sm font-medium text-orange-400 mb-2">
+          Slug (volitelné)
+        </label>
+        <input
+          id="game-slug"
+          {...form.register("slug")}
+          className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+        />
+      </div>
 
-      <Form.Group className="mb-3" controlId="game-desc">
-        <Form.Label>Popis</Form.Label>
-        <Form.Control as="textarea" rows={4} {...form.register("description")} />
-      </Form.Group>
+      {/* Description */}
+      <div>
+        <label htmlFor="game-desc" className="block text-sm font-medium text-orange-400 mb-2">
+          Popis
+        </label>
+        <textarea
+          id="game-desc"
+          rows={4}
+          {...form.register("description")}
+          className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all resize-none"
+        />
+      </div>
 
-      <Row>
-        <Col md={6}>
-          <Form.Group className="mb-3" controlId="release-year">
-            <Form.Label>Rok vydání</Form.Label>
-            <Form.Control type="number" {...form.register("releaseYear", { valueAsNumber: true })} />
-          </Form.Group>
-        </Col>
-        <Col md={6}>
-          <Form.Group className="mb-3" controlId="cover">
-            <Form.Label>URL obrázku obalu</Form.Label>
-            <Form.Control type="url" {...form.register("coverImage")} />
-          </Form.Group>
-        </Col>
-      </Row>
+      {/* Release Year and Cover Image */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label htmlFor="release-year" className="block text-sm font-medium text-orange-400 mb-2">
+            Rok vydání
+          </label>
+          <input
+            id="release-year"
+            type="number"
+            {...form.register("releaseYear", { valueAsNumber: true })}
+            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+          />
+        </div>
+        <div>
+          <label htmlFor="cover" className="block text-sm font-medium text-orange-400 mb-2">
+            URL obrázku obalu
+          </label>
+          <input
+            id="cover"
+            type="url"
+            {...form.register("coverImage")}
+            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+          />
+        </div>
+      </div>
 
-      <Form.Group className="mb-3">
-        <Form.Label>Žánry</Form.Label>
-        <div className="row row-cols-1 row-cols-md-3 g-2">
+      {/* Genres */}
+      <div>
+        <label className="block text-sm font-medium text-orange-400 mb-3">Žánry</label>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {genres.map((genre) => (
-            <Col key={genre.id}>
-              <Form.Check
+            <label key={genre.id} className="flex items-center gap-2 cursor-pointer">
+              <input
                 type="checkbox"
-                id={`genre-${genre.id}`}
-                label={genre.name}
                 value={genre.id}
                 {...form.register("genreIds")}
+                className="w-4 h-4 bg-gray-700 border border-gray-600 rounded accent-orange-500 cursor-pointer"
               />
-            </Col>
+              <span className="text-gray-300 text-sm">{genre.name}</span>
+            </label>
           ))}
         </div>
-      </Form.Group>
+      </div>
 
-      <Form.Group className="mb-3">
-        <Form.Label>Tagy</Form.Label>
-        <div className="row row-cols-1 row-cols-md-3 g-2">
+      {/* Tags */}
+      <div>
+        <label className="block text-sm font-medium text-orange-400 mb-3">Tagy</label>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {tags.map((tag) => (
-            <Col key={tag.id}>
-              <Form.Check
+            <label key={tag.id} className="flex items-center gap-2 cursor-pointer">
+              <input
                 type="checkbox"
-                id={`tag-${tag.id}`}
-                label={tag.name}
                 value={tag.id}
                 {...form.register("tagIds")}
+                className="w-4 h-4 bg-gray-700 border border-gray-600 rounded accent-orange-500 cursor-pointer"
               />
-            </Col>
+              <span className="text-gray-300 text-sm">{tag.name}</span>
+            </label>
           ))}
         </div>
-      </Form.Group>
+      </div>
 
-      <Form.Group className="mb-3">
-        <Form.Label>Nové tagy (oddělené přidáním)</Form.Label>
-        <div className="d-flex gap-2 flex-wrap">
-          <Form.Control
+      {/* New Tags */}
+      <div>
+        <label htmlFor="new-tags" className="block text-sm font-medium text-orange-400 mb-2">
+          Nové tagy (oddělené přidáním)
+        </label>
+        <div className="flex gap-2 flex-wrap">
+          <input
+            id="new-tags"
             value={newTagInput}
             onChange={(event) => setNewTagInput(event.target.value)}
             placeholder="např. Soulslike"
+            className="flex-1 min-w-[200px] px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
           />
-          <Button
+          <button
             type="button"
-            variant="outline-secondary"
             onClick={() => {
               const trimmed = newTagInput.trim();
               if (!trimmed) return;
               setInlineTags((prev) => [...new Set([...prev, trimmed])]);
               setNewTagInput("");
             }}
+            className="px-4 py-2 border border-orange-500 text-orange-400 hover:bg-orange-500/10 rounded-lg transition-all duration-200 font-medium text-sm"
           >
             Přidat
-          </Button>
+          </button>
         </div>
         {inlineTags.length > 0 ? (
-          <Form.Text className="text-muted d-block mt-2">{inlineTags.join(", ")}</Form.Text>
+          <p className="text-gray-400 text-sm mt-2">{inlineTags.join(", ")}</p>
         ) : null}
-      </Form.Group>
+      </div>
 
-      {error ? <p className="text-danger small">{error}</p> : null}
+      {/* Error */}
+      {error ? <p className="text-red-400 text-sm">{error}</p> : null}
 
-      <Button type="submit" variant="primary" disabled={pending}>
+      {/* Submit */}
+      <button
+        type="submit"
+        disabled={pending}
+        className="w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-semibold rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
         {pending ? "Ukládám…" : "Vytvořit hru"}
-      </Button>
-    </Form>
+      </button>
+    </form>
   );
 }

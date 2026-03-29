@@ -1,5 +1,4 @@
-import Link from "next/link";
-import Table from "react-bootstrap/Table";
+﻿import Link from "next/link";
 
 import { auth } from "@/auth";
 import { DeleteReviewButton } from "@/components/dashboard/delete-review-button";
@@ -32,63 +31,69 @@ export default async function DashboardReviewsPage({
 
   return (
     <section>
-      <div className="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
-        <h1 className="h2 fw-bold text-dark mb-0">Vaše recenze</h1>
-        <Link href="/dashboard/reviews/new" className="btn btn-primary">
+      <div className="flex flex-wrap justify-between items-center gap-4 mb-6">
+        <h1 className="text-2xl font-bold text-white">Vaše recenze</h1>
+        <Link href="/dashboard/reviews/new" className="px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-semibold rounded-lg transition-all duration-200">
           Nová recenze
         </Link>
       </div>
 
-      <div className="table-responsive rounded shadow-sm bg-white">
-        <Table striped bordered hover size="sm" className="mb-0 align-middle">
-          <thead className="table-light">
-            <tr>
-              <th>Název</th>
-              <th>Hra</th>
-              <th>Skóre</th>
-              <th>Stav</th>
-              <th>Publikováno</th>
-              <th>Akce</th>
-            </tr>
-          </thead>
-          <tbody>
-            {reviews.map((review: DashboardReview) => (
-              <tr key={review.id}>
-                <td className="fw-medium">{review.title}</td>
-                <td>{review.game.title}</td>
-                <td>{review.score}</td>
-                <td>
-                  <ReviewStatusToggle reviewId={review.id} status={review.status} />
-                </td>
-                <td className="text-nowrap small">
-                  {review.publishDate
-                    ? new Date(review.publishDate).toLocaleString()
-                    : "—"}
-                </td>
-                <td>
-                  <div className="d-flex flex-wrap gap-2">
-                    <Link
-                      href={`/dashboard/reviews/${review.id}/edit`}
-                      className="btn btn-outline-secondary btn-sm"
-                    >
-                      Upravit
-                    </Link>
-                    <DeleteReviewButton reviewId={review.id} />
-                  </div>
-                </td>
+      <div className="rounded-lg overflow-hidden shadow-xl border border-orange-600/30 bg-gradient-to-br from-gray-900 to-black">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm">
+            <thead className="bg-gray-800 border-b border-orange-600/30">
+              <tr>
+                <th className="px-6 py-4 font-semibold text-orange-400">Název</th>
+                <th className="px-6 py-4 font-semibold text-orange-400">Hra</th>
+                <th className="px-6 py-4 font-semibold text-orange-400">Skóre</th>
+                <th className="px-6 py-4 font-semibold text-orange-400">Stav</th>
+                <th className="px-6 py-4 font-semibold text-orange-400">Publikováno</th>
+                <th className="px-6 py-4 font-semibold text-orange-400">Akce</th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody className="divide-y divide-gray-700">
+              {reviews.map((review: DashboardReview) => (
+                <tr key={review.id} className="hover:bg-gray-800/50 transition-colors">
+                  <td className="px-6 py-4 font-medium text-white">{review.title}</td>
+                  <td className="px-6 py-4 text-gray-300">{review.game.title}</td>
+                  <td className="px-6 py-4 text-gray-300">{review.score}</td>
+                  <td className="px-6 py-4">
+                    <ReviewStatusToggle reviewId={review.id} status={review.status} />
+                  </td>
+                  <td className="px-6 py-4 text-gray-400 whitespace-nowrap text-xs">
+                    {review.publishDate
+                      ? new Date(review.publishDate).toLocaleString()
+                      : "—"}
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex flex-wrap gap-2">
+                      <Link
+                        href={`/dashboard/reviews/${review.id}/edit`}
+                        className="px-3 py-2 bg-gray-700 hover:bg-gray-600 text-gray-100 text-sm font-medium rounded transition-all duration-200"
+                      >
+                        Upravit
+                      </Link>
+                      <DeleteReviewButton reviewId={review.id} />
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {pages > 1 ? (
-        <div className="d-flex flex-wrap gap-2 justify-content-center mt-4">
+        <div className="flex flex-wrap gap-2 justify-center mt-6">
           {Array.from({ length: pages }, (_, i) => i + 1).map((p) => (
             <Link
               key={p}
               href={buildHref(p)}
-              className={`btn btn-sm ${p === currentPage ? "btn-primary" : "btn-outline-secondary"}`}
+              className={`px-4 py-2 rounded font-medium transition-all duration-200 ${
+                p === currentPage
+                  ? "bg-gradient-to-r from-orange-500 to-red-600 text-white"
+                  : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+              }`}
             >
               {p}
             </Link>

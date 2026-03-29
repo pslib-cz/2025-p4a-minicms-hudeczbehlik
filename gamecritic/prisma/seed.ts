@@ -16,17 +16,45 @@ async function main() {
     },
   });
 
-  const action = await prisma.genre.upsert({
-    where: { slug: "action" },
-    update: {},
-    create: { name: "Akce", slug: "action" },
-  });
+  const genreDefinitions = [
+    { name: "Akce", slug: "action" },
+    { name: "RPG", slug: "rpg" },
+    { name: "Dobrodružné", slug: "adventure" },
+    { name: "Strategie", slug: "strategy" },
+    { name: "Simulátory", slug: "simulation" },
+    { name: "Závodní", slug: "racing" },
+    { name: "Sportovní", slug: "sports" },
+    { name: "Střílečky", slug: "shooter" },
+    { name: "Horor", slug: "horror" },
+    { name: "Puzzle", slug: "puzzle" },
+    { name: "Plošinovky", slug: "platformer" },
+    { name: "Bojové", slug: "fighting" },
+    { name: "MMO", slug: "mmo" },
+    { name: "Roguelike", slug: "roguelike" },
+    { name: "Sandbox", slug: "sandbox" },
+    { name: "Open World", slug: "open-world" },
+    { name: "Survival", slug: "survival" },
+    { name: "Stealth", slug: "stealth" },
+    { name: "Visual Novel", slug: "visual-novel" },
+  ] as const;
 
-  const rpg = await prisma.genre.upsert({
-    where: { slug: "rpg" },
-    update: {},
-    create: { name: "RPG", slug: "rpg" },
-  });
+  const genresBySlug = new Map<string, { id: string; name: string; slug: string }>();
+
+  for (const genre of genreDefinitions) {
+    const upserted = await prisma.genre.upsert({
+      where: { slug: genre.slug },
+      update: { name: genre.name },
+      create: { name: genre.name, slug: genre.slug },
+    });
+    genresBySlug.set(upserted.slug, upserted);
+  }
+
+  const action = genresBySlug.get("action");
+  const rpg = genresBySlug.get("rpg");
+
+  if (!action || !rpg) {
+    throw new Error("Nepodařilo se připravit povinné žánry action/rpg.");
+  }
 
   const tagSp = await prisma.tag.upsert({
     where: { slug: "single-player" },

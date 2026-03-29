@@ -24,7 +24,7 @@ export default async function LoginPage({
   })();
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-100 p-4">
+    <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-900 to-black p-4">
       <form
         action={async (formData) => {
           "use server";
@@ -37,24 +37,24 @@ export default async function LoginPage({
 
           redirect(redirectTo);
         }}
-        className="w-full max-w-md space-y-4 rounded-xl bg-white p-6 shadow"
+        className="w-full max-w-md space-y-4 rounded-xl bg-gradient-to-br from-gray-900 to-black border border-orange-600/30 p-6 shadow-lg"
       >
-        <h1 className="text-2xl font-black text-slate-900">Login</h1>
+        <h1 className="text-2xl font-black text-white">Login</h1>
         <input
           name="email"
           type="email"
           required
           placeholder="you@example.com"
-          className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+          className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500"
         />
         <input
           name="password"
           type="password"
           required
           placeholder="••••••••"
-          className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+          className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500"
         />
-        <button className="w-full rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white">
+        <button className="w-full rounded-lg bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 px-4 py-2 text-sm font-semibold text-white transition-colors">
           Continue
         </button>
       </form>

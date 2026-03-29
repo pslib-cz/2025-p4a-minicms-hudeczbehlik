@@ -59,27 +59,27 @@ export default async function ReviewDetailPage({
 
   return (
     <article className="space-y-8">
-      <header className="rounded-xl bg-white p-6 shadow">
-        <p className="text-sm text-slate-600">{review.game.title}</p>
-        <h1 className="mt-2 text-3xl font-black text-slate-900">{review.title}</h1>
+      <header className="rounded-xl bg-gradient-to-br from-gray-900 to-black border border-orange-600/30 p-6 shadow-lg">
+        <p className="text-sm text-gray-400">{review.game.title}</p>
+        <h1 className="mt-2 text-3xl font-black text-white">{review.title}</h1>
         <p className={`mt-3 text-lg ${scoreClass(review.score)}`}>{review.score}/10</p>
       </header>
 
-      <section className="prose max-w-none rounded-xl bg-white p-6 shadow">
+      <section className="prose prose-invert max-w-none rounded-xl bg-gradient-to-br from-gray-900 to-black border border-orange-600/30 p-6 shadow-lg">
         <div dangerouslySetInnerHTML={{ __html: safeHtml }} />
       </section>
 
-      <aside className="rounded-xl bg-white p-6 shadow">
-        <h2 className="text-lg font-bold text-slate-900">Author</h2>
+      <aside className="rounded-xl bg-gradient-to-br from-gray-900 to-black border border-orange-600/30 p-6 shadow-lg">
+        <h2 className="text-lg font-bold text-white">Author</h2>
         <div className="mt-3 flex items-center gap-3">
-          <div className="relative h-10 w-10 overflow-hidden rounded-full bg-slate-200">
+          <div className="relative h-10 w-10 overflow-hidden rounded-full bg-gray-700">
             {review.author.image ? (
               <Image src={review.author.image} alt={review.author.name} fill className="object-cover" />
             ) : null}
           </div>
           <div>
-            <p className="font-medium text-slate-900">{review.author.name}</p>
-            <Link href={`/authors/${review.author.id}`} className="text-sm text-sky-600">
+            <p className="font-medium text-white">{review.author.name}</p>
+            <Link href={`/authors/${review.author.id}`} className="text-sm text-orange-400 hover:text-orange-300 transition-colors">
               View profile
             </Link>
           </div>

@@ -5,9 +5,9 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 const variantClasses: Record<NonNullable<ButtonProps["variant"]>, string> = {
-  primary: "bg-sky-600 text-white hover:bg-sky-500",
-  secondary: "bg-slate-200 text-slate-900 hover:bg-slate-300",
-  danger: "bg-rose-600 text-white hover:bg-rose-500",
+  primary: "bg-gradient-to-r from-orange-500 to-red-600 text-white hover:from-orange-600 hover:to-red-700",
+  secondary: "bg-gray-700 text-gray-100 hover:bg-gray-600",
+  danger: "bg-red-600 text-white hover:bg-red-700",
 };
 
 export function Button({

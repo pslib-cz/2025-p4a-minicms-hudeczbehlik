@@ -57,19 +57,19 @@ export default async function GamesPage({
   return (
     <div className="space-y-8">
       <header>
-        <h1 className="text-3xl font-black text-slate-900">Game Catalog</h1>
-        <p className="mt-2 text-slate-600">Filter by genre, tag, and search query.</p>
+        <h1 className="text-3xl font-black text-white">Game Catalog</h1>
+        <p className="mt-2 text-gray-400">Filter by genre, tag, and search query.</p>
       </header>
 
-      <form className="grid gap-4 rounded-xl bg-white p-4 shadow md:grid-cols-4">
+      <form className="grid gap-4 rounded-xl bg-gradient-to-br from-gray-900 to-black border border-orange-600/30 p-4 shadow-lg md:grid-cols-4">
         <input
           name="q"
           defaultValue={query}
           placeholder="Search games..."
-          className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
+          className="rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500"
         />
 
-        <select name="genre" defaultValue={genres[0]} className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm">
+        <select name="genre" defaultValue={genres[0]} className="rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500">
           <option value="">Any genre</option>
           {filters.genres.map((genre: CatalogGenre) => (
             <option key={genre.id} value={genre.slug}>
@@ -78,7 +78,7 @@ export default async function GamesPage({
           ))}
         </select>
 
-        <select name="tag" defaultValue={tags[0]} className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm">
+        <select name="tag" defaultValue={tags[0]} className="rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500">
           <option value="">Any tag</option>
           {filters.tags.map((tag: CatalogTag) => (
             <option key={tag.id} value={tag.slug}>
@@ -87,17 +87,17 @@ export default async function GamesPage({
           ))}
         </select>
 
-        <button className="rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white">Apply</button>
+        <button className="rounded-lg bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 px-4 py-2 text-sm font-semibold text-white transition-all">Apply</button>
       </form>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {items.map((game: CatalogGame) => (
-          <article key={game.id} className="rounded-xl bg-white p-4 shadow">
-            <h2 className="text-xl font-bold text-slate-900">{game.title}</h2>
-            <p className="mt-2 line-clamp-2 text-sm text-slate-600">{game.description}</p>
+          <article key={game.id} className="rounded-xl bg-gradient-to-br from-gray-900 to-black border border-orange-600/30 p-4 shadow-lg hover:shadow-xl transition-shadow">
+            <h2 className="text-xl font-bold text-white">{game.title}</h2>
+            <p className="mt-2 line-clamp-2 text-sm text-gray-400">{game.description}</p>
             <div className="mt-3 flex flex-wrap gap-1">
               {game.genres.map((genre: CatalogGenre) => (
-                <span key={genre.id} className="rounded bg-slate-100 px-2 py-1 text-xs text-slate-600">
+                <span key={genre.id} className="rounded bg-orange-600/20 px-2 py-1 text-xs text-orange-300">
                   {genre.name}
                 </span>
               ))}

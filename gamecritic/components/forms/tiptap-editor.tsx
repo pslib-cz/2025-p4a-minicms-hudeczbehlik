@@ -19,7 +19,7 @@ export function TiptapEditor({ value, onChange }: Props) {
     editorProps: {
       attributes: {
         class:
-          "min-h-[260px] rounded-lg border border-slate-300 bg-white p-3 text-sm text-slate-900 focus:outline-none",
+          "min-h-[260px] rounded-lg border border-gray-700 bg-gray-800 p-3 text-sm text-white focus:outline-none ring-orange-500 focus:ring-2",
       },
     },
     onUpdate({ editor }) {
