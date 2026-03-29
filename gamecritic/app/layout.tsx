@@ -12,6 +12,9 @@ export const metadata: Metadata = {
     template: "%s | GameCritic",
   },
   description: "Community-driven game review platform",
+  verification: {
+    google: "NHM62TXUjbiVLuDCS0E6waL1KRSH-5wR7fqWFiizdi4",
+  },
 };
 
 export default function RootLayout({
