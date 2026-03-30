@@ -1,14 +1,20 @@
 import { hash } from "bcryptjs";
 import { NextResponse } from "next/server";
 
-import { auth } from "@/auth";
+import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { criticCreateSchema } from "@/lib/validations/critic";
 
 export async function POST(request: Request) {
-  const session = await auth();
+  let user: Awaited<ReturnType<typeof requireUser>> | null = null;
 
-  if (!session?.user?.id) {
+  try {
+    user = await requireUser();
+  } catch {
+    return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+  }
+
+  if (!user?.id) {
     return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   }
 
@@ -38,7 +44,7 @@ export async function POST(request: Request) {
 
   const passwordHash = await hash(parsed.data.password, 12);
 
-  const user = await prisma.user.create({
+  const createdUser = await prisma.user.create({
     data: {
       name: parsed.data.name,
       email: parsed.data.email,
@@ -47,5 +53,5 @@ export async function POST(request: Request) {
     select: { id: true },
   });
 
-  return NextResponse.json({ success: true, data: { id: user.id } }, { status: 201 });
+  return NextResponse.json({ success: true, data: { id: createdUser.id } }, { status: 201 });
 }

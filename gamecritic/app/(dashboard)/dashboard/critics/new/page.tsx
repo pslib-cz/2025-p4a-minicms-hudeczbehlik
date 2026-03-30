@@ -1,12 +1,12 @@
 import { redirect } from "next/navigation";
 
-import { auth } from "@/auth";
 import { CriticForm } from "@/components/forms/critic-form";
+import { requireUser } from "@/lib/auth";
 
 export default async function NewCriticPage() {
-  const session = await auth();
-
-  if (!session?.user?.id) {
+  try {
+    await requireUser();
+  } catch {
     redirect("/login?callbackUrl=/dashboard/critics/new");
   }
 
