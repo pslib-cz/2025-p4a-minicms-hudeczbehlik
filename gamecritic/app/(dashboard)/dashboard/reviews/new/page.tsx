@@ -6,7 +6,7 @@ export default async function NewReviewPage() {
 
   return (
     <section className="space-y-4">
-      <h1 className="text-3xl font-black text-slate-900">Create review</h1>
+      <h1 className="text-3xl font-black text-white">Create review</h1>
       <ReviewForm games={games} />
     </section>
   );

@@ -15,7 +15,7 @@ export default async function NewGamePage() {
 
   return (
     <section className="space-y-4">
-      <h1 className="text-3xl font-black text-slate-900">Add game</h1>
+      <h1 className="text-3xl font-black text-white">Add game</h1>
       <GameForm genres={genres} tags={tags} />
     </section>
   );

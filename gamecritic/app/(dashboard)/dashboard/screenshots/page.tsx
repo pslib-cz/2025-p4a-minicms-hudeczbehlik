@@ -17,7 +17,7 @@ export default async function ScreenshotsPage() {
 
   return (
     <section className="space-y-4">
-      <h1 className="text-3xl font-black text-slate-900">Screenshots</h1>
+      <h1 className="text-3xl font-black text-white">Screenshots</h1>
       <ScreenshotManager games={games} screenshots={screenshots} />
     </section>
   );

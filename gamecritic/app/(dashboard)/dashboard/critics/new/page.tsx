@@ -12,7 +12,7 @@ export default async function NewCriticPage() {
 
   return (
     <section className="space-y-4">
-      <h1 className="text-3xl font-black text-slate-900">Přidat kritika</h1>
+      <h1 className="text-3xl font-black text-white">Přidat kritika</h1>
       <CriticForm />
     </section>
   );
