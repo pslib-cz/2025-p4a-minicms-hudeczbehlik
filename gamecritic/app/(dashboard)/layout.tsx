@@ -26,6 +26,9 @@ export default function DashboardLayout({
               <Link href="/dashboard/screenshots" className="nav-link py-2 px-4 text-gray-300 hover:text-orange-500 hover:bg-orange-500/10 rounded-md transition-all duration-200">
                 Screenshoty
               </Link>
+              <Link href="/dashboard/critics/new" className="nav-link py-2 px-4 text-gray-300 hover:text-orange-500 hover:bg-orange-500/10 rounded-md transition-all duration-200">
+                Přidat kritika
+              </Link>
             </nav>
           </div>
         </div>
